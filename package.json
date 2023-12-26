@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "bin": {
-    "calc": "./homework-02/index.js"
+    "calc": "homework-02/index.js"
   },
   "scripts": {
     "start": "node ./homework-02/index.js",
