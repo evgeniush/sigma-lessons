@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { add, div, mul, sub } from './operations.js';
 import { compose, takeRight, toNumber } from './utils.js';
 import validate from './validations.js';
