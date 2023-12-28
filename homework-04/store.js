@@ -7,6 +7,10 @@ class State {
         this.max = max;
     }
 
+    get max() {
+        return this.#max ?? 0;
+    }
+
     set max(value) {
         this.#max = value;
     }

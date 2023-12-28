@@ -6,11 +6,14 @@ import { SENTENCES_FILE_NAME } from './constants.js';
 export async function validateRequestedFileSize() {
     const [, , , requestedFileSizeArg] = process.argv;
     const requestedFileSize = Number(requestedFileSizeArg);
-    if (!requestedFileSizeArg || !Number.isFinite(requestedFileSize) || requestedFileSize === 0) {
+    if ([
+        !requestedFileSizeArg,
+        !Number.isFinite(requestedFileSize),
+        requestedFileSize === 0,
+    ].some(v => v)) {
         throw new Error('no requested file size provided');
     }
 }
-
 
 export async function validateSentencesFilePath() {
     const [, , sentencesFilePath] = process.argv;

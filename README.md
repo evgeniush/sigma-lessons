@@ -1,32 +1,30 @@
-# Консольний калькулятор
+# Програма для генерації та аналізу текстового файлу в Node.js
 
-Підтримує чотири основні арифметичні операції:
+Програм виконує дві основні функції:
 
-* Додавання (add)
-* Віднімання (sub)
-* Множення (mul)
-* Ділення (div)
-
-Введення чисел та операцій за допомогою аргументів командного рядка.
+* Генерація текстового файлу заданого розміру (у bytes), що містить випадковий набір визначених речень (речення
+  зазначені у файлі
+  sentences.txt)
+* Підрахунок кількості слів у заданому текстовому файлі файлі.
 
 Результат виводиться у консоль.
-
-Обробляє помилки, наприклад, ділення на нуль, некоректні аргументи.
-
-## Встановлення
-
-Пакет виокнується безпосередньо через **npx**, без необхідності його глобального встановлення.
 
 ## Використання
 
 ```shell
-npx sigma-lessons add 2 3
-# prints: 
-You're trying to add with 2 and 3
-Calculation result is:  5
+# Generate
+# homework-04 - path to the sentences file
+# 1073741824 - (1Gb) required final file size in bytes 
+npm run generate homework-04 1073741824
 
-npx sigma-lessons div 3 0
-# throws an error:
-Error: Cannot divide by zero 
+# prints: 
+The file with requested size 1073741824 has been generated: /Users/yevgenchabanyuk/Documents/Projects/sigma-lessons/homework-04/result.txt
+Spent time: 00:25:46
+
+# Count words
+# homework-04 - path to the result file
+npm run count homework-04
+# prints:
+Words count in the result file is:  173880032
 ```
 
