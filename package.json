@@ -9,6 +9,8 @@
     "calc": "homework-02/index.js"
   },
   "scripts": {
+    "count": "node ./homework-04/count.js",
+    "generate": "node ./homework-04/index.js",
     "start": "node ./homework-02/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
