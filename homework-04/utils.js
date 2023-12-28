@@ -5,7 +5,7 @@ export const getLine = ({ ids = [], entities = new Map() }) => {
     return entities.get(randomIndex);
 };
 
-export const getContentEntities = (data = []) => {
+export const getRawContentEntities = (data = []) => {
     const contents = {
         ids: [],
         entities: new Map(),

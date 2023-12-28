@@ -1,14 +1,38 @@
-import { appendFile, readFile, stat } from 'node:fs/promises';
+import { appendFile, readFile, stat, writeFile } from 'node:fs/promises';
 import process from 'node:process';
 import stream from 'node:stream';
 import sizeState from './store.js';
-import { getAbortSignal, getContentEntities, getLine } from './utils.js';
+import { getAbortSignal, getLine, getRawContentEntities } from './utils.js';
 import { validateRequestedFileSize, validateSentencesFilePath } from './validations.js';
+import { RESULT_FILE_NAME, SENTENCES_FILE_NAME, TASK_FOLDER } from './constants.js';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-async function* refreshStat(sizeState) {
+// make __dirname const available
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const main = async (sizeState) => {
+    await createResulFile();
+    await validateRequestedFileSize();
+    await validateSentencesFilePath();
+
+    const { sentencesFilePath, requestedFileSize } = pluckRequiredArgs();
+    sizeState.max = requestedFileSize;
+    const signal = getAbortSignal();
+    const sentencesFile = path.resolve(sentencesFilePath, SENTENCES_FILE_NAME);
+    const data = await readFile(sentencesFile, { signal, encoding: 'utf-8' });
+    const contents = getRawContentEntities(data);
+
+    await read(contents, signal);
+};
+
+main(sizeState).catch(console.error);
+
+async function* refreshResultFileStat(sizeState) {
     try {
-        while (sizeState.isCurrentSizeLowerMax) {
-            const { size } = await stat('result.txt');
+        while (sizeState.isCurrentSizeAcceptable) {
+            const { size } = await stat(getResultFilePath());
             sizeState.current = size;
             yield;
         }
@@ -16,7 +40,6 @@ async function* refreshStat(sizeState) {
         console.error(e);
     }
 }
-
 
 function pluckRequiredArgs() {
     const [, , sentencesFilePath, requestedFileSizeArg] = process.argv;
@@ -27,38 +50,32 @@ function pluckRequiredArgs() {
 
 async function appendResulFileWithRandomLine(contents, signal) {
     const line = getLine({ ...contents });
-    await appendFile('result.txt', `${line}\n`, { signal });
+    await appendFile(getResultFilePath(), `${line}\n`, { signal });
 }
 
-const main = async () => {
-    await validateRequestedFileSize();
-    await validateSentencesFilePath();
+async function createResulFile() {
+    await writeFile(getResultFilePath(), '', { encoding: 'utf-8' });
+}
 
-    const { sentencesFilePath, requestedFileSize } = pluckRequiredArgs();
+async function read(contents, signal) {
+    const readable = stream.Readable.from(refreshResultFileStat(sizeState));
+    const onData = async () => {
+        readable.pause();
+        await appendResulFileWithRandomLine(contents, signal);
+        readable.resume();
+    };
+    const onEnd = () => {
+        console.log('the file with requested size has been generated: ', getResultFilePath());
+        // signal.abort();
+    };
 
-    const signal = getAbortSignal();
-    const data = await readFile(sentencesFilePath, { signal, encoding: 'utf-8' });
-    const contents = getContentEntities(data);
+    readable.on('data', onData);
+    readable.on('end', onEnd);
+}
 
-    async function read() {
-        const readable = stream.Readable.from(refreshStat(sizeState));
-
-        readable.on('data', async () => {
-            readable.pause();
-            await appendResulFileWithRandomLine(contents, signal);
-            readable.resume();
-        });
-
-        readable.on('end', () => {
-            signal.abort();
-        });
-    }
-
-    await read();
-};
-
-main().catch(console.error);
-
+function getResultFilePath() {
+    return path.resolve(TASK_FOLDER, RESULT_FILE_NAME);
+}
 
 // Генерація текстового файлу заданого розміру, що містить випадковий набір визначених речень (речення зазначені у файлі sentences.txt)
 // Підрахунок кількості слів у заданому текстовому файлі файлі.

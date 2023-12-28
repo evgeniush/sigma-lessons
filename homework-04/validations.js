@@ -1,6 +1,7 @@
 import { access } from 'node:fs/promises';
 import process from 'node:process';
 import path from 'node:path';
+import { SENTENCES_FILE_NAME } from './constants.js';
 
 export async function validateRequestedFileSize() {
     const [, , , requestedFileSizeArg] = process.argv;
@@ -16,6 +17,6 @@ export async function validateSentencesFilePath() {
     if (!sentencesFilePath) {
         throw new Error('no sentencesFilePath provided');
     }
-    const sentencesFile = path.resolve(sentencesFilePath, 'sentences.txt');
+    const sentencesFile = path.resolve(sentencesFilePath, SENTENCES_FILE_NAME);
     await access(sentencesFile);
 }

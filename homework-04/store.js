@@ -15,7 +15,7 @@ class State {
         this.#current = value;
     }
 
-    get isCurrentSizeLowerMax() {
+    get isCurrentSizeAcceptable() {
         if ([this.#current, this.#max].some(v => !Number.isFinite(v))) {
             return false;
         }
