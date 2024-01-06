@@ -1,6 +1,3 @@
-import { RESULT_FILE_NAME, TASK_FOLDER } from './constants.js';
-import path from 'node:path';
-
 export const sample = arr => arr[Math.floor(Math.random() * arr.length)];
 
 export const getLine = ({ ids = [], entities = new Map() }) => {
@@ -24,10 +21,6 @@ export const getAbortSignal = () => {
     const controller = new AbortController();
     const { signal } = controller;
     return signal;
-};
-
-export const getResultFilePath = () => {
-    return path.resolve(TASK_FOLDER, RESULT_FILE_NAME);
 };
 
 export const countChunkWords = (chunk) => chunk.split('\n').reduce((acc, cur) => acc + cur.split(' ').length, 0);
