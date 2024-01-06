@@ -5,13 +5,9 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-  "bin": {
-    "calc": "homework-02/index.js"
-  },
   "scripts": {
-    "count": "node ./homework-04/count.js",
-    "generate": "node ./homework-04/index.js",
-    "start": "node ./homework-02/index.js",
+    "count": "node count.js",
+    "generate": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
