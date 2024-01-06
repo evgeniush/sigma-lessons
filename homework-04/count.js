@@ -1,25 +1,17 @@
-import process from 'node:process';
 import { createReadStream } from 'node:fs';
-import { access } from 'node:fs/promises';
-import { RESULT_FILE_NAME } from './constants.js';
-import path from 'node:path';
-import { countChunkWords } from './utils.js';
-
-function pluckResultFilePath() {
-    const [, , resultFileFolder] = process.argv;
-    return { resultFileFolder };
-}
+import { result } from './params.js';
+import { validateFilePath } from './validations.js';
+import { splitChunkToWords } from './utils.js';
 
 const main = async () => {
-    const { resultFileFolder } = pluckResultFilePath();
-    const resultFilePath = path.resolve(resultFileFolder, RESULT_FILE_NAME);
-    await access(resultFilePath);
-    const rs = createReadStream(resultFilePath, 'utf8');
-    let count = 0;
+    await validateFilePath(result, 'Result');
+
+    const rs = createReadStream(result, 'utf8');
+    let words = [];
     for await (const chunk of rs) {
-        count = count + countChunkWords(chunk);
+        words = [...new Set([...words, ...splitChunkToWords(chunk)])];
     }
-    console.log('Words count in the result file is: ', count);
+    console.log('Words count in the result file is: ', words.length);
 };
 
 main().catch(console.error);

@@ -23,4 +23,6 @@ export const getAbortSignal = () => {
     return signal;
 };
 
-export const countChunkWords = (chunk) => chunk.split('\n').reduce((acc, cur) => acc + cur.split(' ').length, 0);
+export const splitChunkToWords = (chunk) => chunk.split('\n').reduce((acc, cur) => [
+    ...acc, ...cur.split(' '),
+], []);
