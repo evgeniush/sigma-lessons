@@ -5,7 +5,7 @@ export const getLine = ({ ids = [], entities = new Map() }) => {
     return entities.get(randomIndex);
 };
 
-export const getRawContentEntities = (data = []) => {
+export const getRawContentEntities = (data = '') => {
     const contents = {
         ids: [],
         entities: new Map(),
@@ -17,12 +17,8 @@ export const getRawContentEntities = (data = []) => {
     return contents;
 };
 
-export const getAbortSignal = () => {
-    const controller = new AbortController();
-    const { signal } = controller;
-    return signal;
-};
-
 export const splitChunkToWords = (chunk) => chunk.split('\n').reduce((acc, cur) => [
     ...acc, ...cur.split(' '),
 ], []);
+
+export const byteSize = str => new Blob([str]).size;
