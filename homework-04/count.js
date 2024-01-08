@@ -1,26 +1,27 @@
-import process from 'node:process';
 import { createReadStream } from 'node:fs';
-import { access } from 'node:fs/promises';
-import { RESULT_FILE_NAME } from './constants.js';
-import path from 'node:path';
-import { countChunkWords } from './utils.js';
+import { result } from './params.js';
+import { validateFilePath } from './validations.js';
+import { splitChunkToWords } from './utils.js';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration.js';
 
-function pluckResultFilePath() {
-    const [, , resultFileFolder] = process.argv;
-    return { resultFileFolder };
-}
+dayjs.extend(duration);
 
-const main = async () => {
-    const { resultFileFolder } = pluckResultFilePath();
-    const resultFilePath = path.resolve(resultFileFolder, RESULT_FILE_NAME);
-    await access(resultFilePath);
-    const rs = createReadStream(resultFilePath, 'utf8');
-    let count = 0;
+const count = async () => {
+    await validateFilePath(result, 'Result');
+    const rs = createReadStream(result, 'utf8');
+    let words = new Set();
+    console.log('Counting, be patient...');
+    let start = Date.now();
     for await (const chunk of rs) {
-        count = count + countChunkWords(chunk);
+        splitChunkToWords(chunk).forEach(word => words.add(word));
     }
-    console.log('Words count in the result file is: ', count);
+    let end = Date.now();
+    const spentMilliseconds = end - start;
+    const formattedSpentTime = dayjs.duration(spentMilliseconds).format('HH:mm:ss');
+    console.log('Words count in the result file is: ', words.size);
+    console.log(`Spent time on counting: ${formattedSpentTime}`);
 };
 
-main().catch(console.error);
+count().catch(console.error);
 

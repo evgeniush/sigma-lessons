@@ -1,9 +1,8 @@
 class State {
-    #current = 0;
     #max = 0;
+    #counter = 0;
 
-    constructor(current = 0, max = 0) {
-        this.current = current;
+    constructor(max = 0) {
         this.max = max;
     }
 
@@ -15,15 +14,22 @@ class State {
         this.#max = value;
     }
 
-    set current(value) {
-        this.#current = value;
+    get counter() {
+        return this.#counter;
     }
 
-    get isCurrentSizeAcceptable() {
-        if ([this.#current, this.#max].some(v => !Number.isFinite(v))) {
+    set counter(value) {
+        if (!Number.isFinite(value)) {
+            return;
+        }
+        this.#counter = this.#counter + value;
+    }
+
+    get isFileSizeAcceptable() {
+        if ([this.#counter, this.#max].some(v => !Number.isFinite(v))) {
             return false;
         }
-        return this.#current < this.#max;
+        return this.#counter < this.#max;
     }
 }
 

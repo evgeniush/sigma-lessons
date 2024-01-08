@@ -6,12 +6,10 @@
   "main": "index.js",
   "type": "module",
   "bin": {
-    "calc": "homework-02/index.js"
+    "calc": "index.js"
   },
   "scripts": {
-    "count": "node ./homework-04/count.js",
-    "generate": "node ./homework-04/index.js",
-    "start": "nodemon ./homework-05/index.js PORT=8181",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -26,7 +24,6 @@
   "dependencies": {
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.10",
-    "pretty-bytes": "^6.1.1",
-    "nodemon": "^3.0.2"
+    "pretty-bytes": "^6.1.1"
   }
 }

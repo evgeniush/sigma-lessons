@@ -1,25 +1,20 @@
 import { access } from 'node:fs/promises';
-import process from 'node:process';
-import path from 'node:path';
-import { SENTENCES_FILE_NAME } from './constants.js';
 
-export async function validateRequestedFileSize() {
-    const [, , , requestedFileSizeArg] = process.argv;
-    const requestedFileSize = Number(requestedFileSizeArg);
+export async function validateRequestedFileSize(str) {
+    const requestedFileSize = Number(str);
     if ([
-        !requestedFileSizeArg,
+        !str,
         !Number.isFinite(requestedFileSize),
         requestedFileSize === 0,
     ].some(v => v)) {
-        throw new Error('no requested file size provided');
+        throw new Error('No valid requested file size provided');
     }
 }
 
-export async function validateSentencesFilePath() {
-    const [, , sentencesFilePath] = process.argv;
-    if (!sentencesFilePath) {
-        throw new Error('no sentencesFilePath provided');
+export async function validateFilePath(str, purpose) {
+    try {
+        await access(str);
+    } catch {
+        throw new Error(`No valid ${purpose} file path provided`);
     }
-    const sentencesFile = path.resolve(sentencesFilePath, SENTENCES_FILE_NAME);
-    await access(sentencesFile);
 }
