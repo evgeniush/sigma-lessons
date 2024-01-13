@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "cross-env PORT=8080 nodemon index.js ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
