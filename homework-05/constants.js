@@ -9,9 +9,9 @@ export const CONTENT_IGNORE = [
 ];
 
 export const MIME_TYPES = {
-    default: 'application/octet-stream',
+    default: 'application/octet-stream; charset=UTF-8',
     html: 'text/html; charset=UTF-8',
-    txt: 'text/plain',
+    txt: 'text/plain; charset=UTF-8',
     js: 'application/javascript; charset=UTF-8',
     json: 'application/json',
     css: 'text/css',
