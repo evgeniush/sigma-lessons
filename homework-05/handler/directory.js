@@ -1,23 +1,15 @@
 import path from 'node:path';
-import { CONTENT_IGNORE, MIME_TYPES } from '../constants.js';
+import { MIME_TYPES } from '../constants.js';
 import { readdir } from 'node:fs/promises';
 import stream from 'node:stream';
 import { getUrlInfos } from '../utils.js';
 
 export default async ({ pathToReturn, url }) => {
-    const dir = await readdir(pathToReturn);
-    const contents = filterDirectoryContent(dir);
+    const contents = await readdir(pathToReturn);
     const html = getHtml({ contents, url });
     const rs = stream.Readable.from(html);
     return { mime: MIME_TYPES.html, rs };
 };
-
-function filterDirectoryContent(arr) {
-    return arr
-        .filter((entity) => !CONTENT_IGNORE.includes(entity))
-        .filter((entity) => !entity.endsWith('.js'))
-        .filter((entity) => entity !== '404.html');
-}
 
 function getHtml({ contents = [], url }) {
     const { parent = null, destination = '/' } = getUrlInfos(url);
