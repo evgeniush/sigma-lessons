@@ -21,7 +21,8 @@ export async function getRequestedPathValidity(resourcePath) {
 }
 
 export function getUrlInfos(url) {
-    const segments = url.substring(1).split('/').filter(Boolean);
+    const decodedUrl = decodeURIComponent(url);
+    const segments = decodedUrl.substring(1).split('/').filter(Boolean);
     const parent =
         segments.length > 1
             ? segments[segments.length - 2]
@@ -29,7 +30,7 @@ export function getUrlInfos(url) {
               ? '/'
               : null;
     const destination = [...segments].pop();
-    const requestedPath = path.join(...[process.cwd(), url]);
+    const requestedPath = path.normalize([process.cwd(), decodedUrl].join('/'));
     return { destination, parent, segments, requestedPath };
 }
 
