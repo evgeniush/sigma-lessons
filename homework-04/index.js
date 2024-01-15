@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { createWriteStream } from 'node:fs';
 import stream from 'node:stream';
 import sizeState from './store.js';
-import { byteSize, getLine, getRawContentEntities } from './utils.js';
+import { getLine, getRawContentEntities } from './utils.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 import prettyBytes from 'pretty-bytes';
@@ -29,7 +29,9 @@ try {
     async function read(contents) {
         console.log('Writing, be patient...');
         let start = Date.now();
-        const readable = stream.Readable.from(readNextLine(sizeState, contents));
+        const readable = stream.Readable.from(
+            readNextLine(sizeState, contents)
+        );
         const writable = createWriteStream(result);
 
         const handleError = () => {
@@ -41,16 +43,19 @@ try {
         const handleEnd = () => {
             let end = Date.now();
             const spentMilliseconds = end - start;
-            const formattedSpentTime = dayjs.duration(spentMilliseconds).format('HH:mm:ss');
+            const formattedSpentTime = dayjs
+                .duration(spentMilliseconds)
+                .format('HH:mm:ss');
             console.log('Done!');
-            console.log(`The file with requested size ${prettyBytes(sizeState.max)} in bytes has been generated: ${result}`);
+            console.log(
+                `The file with requested size ${prettyBytes(
+                    sizeState.max
+                )} in bytes has been generated: ${result}`
+            );
             console.log(`Spent time on writing: ${formattedSpentTime}`);
         };
 
-        readable
-            .on('end', handleEnd)
-            .on('error', handleError)
-            .pipe(writable);
+        readable.on('end', handleEnd).on('error', handleError).pipe(writable);
     }
 } catch (e) {
     console.error(e);
@@ -60,7 +65,7 @@ async function* readNextLine(sizeState, contents) {
     try {
         while (sizeState.isFileSizeAcceptable) {
             const line = `${getLine({ ...contents })}\n`;
-            sizeState.counter = byteSize(line);
+            sizeState.counter = Buffer.byteLength(line);
             yield line;
         }
     } catch (e) {

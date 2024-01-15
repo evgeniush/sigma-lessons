@@ -19,5 +19,3 @@ export const getRawContentEntities = (data = '') => {
         });
     return contents;
 };
-
-export const byteSize = (str) => new Blob([str]).size;
