@@ -4,6 +4,9 @@ import errorHandler from './middlewares/error-handler.middleware.js';
 
 const app = express();
 
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true }));
+
 app.use('/books', booksRouter);
 
 app.use('/', (req, res) => {

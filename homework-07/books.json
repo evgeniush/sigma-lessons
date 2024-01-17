@@ -2,11 +2,13 @@
   "books": [
     {
       "id": "87973835-e3a2-40fe-9131-124c9247474f",
-      "title": "Book 1"
+      "title": "Book 1",
+      "author": "Elton John"
     },
     {
       "id": "b0add325-b326-4470-bc5c-cba84ed48950",
-      "title": "Book 2"
+      "title": "Book 2",
+      "author": "Tom York"
     }
   ]
 }

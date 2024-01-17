@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 
 const getFileContent = async () => {
     const data = await readFile('./books.json', { encoding: 'utf-8' });
@@ -14,4 +14,19 @@ const getBookById = async (bookId) => {
     return book;
 };
 
-export default { getAllBooks, getBookById };
+const addBook = async (book) => {
+    const data = await readFile('./books.json', { encoding: 'utf-8' });
+    const { books } = JSON.parse(data);
+    await writeFile(
+        './books.json',
+        JSON.stringify({
+            books: [...books, book],
+        }),
+        {
+            encoding: 'utf-8',
+        }
+    );
+    return book.id;
+};
+
+export default { getAllBooks, getBookById, addBook };

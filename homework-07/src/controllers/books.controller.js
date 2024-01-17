@@ -3,7 +3,6 @@ import booksService from '../services/books.service.js';
 const getBooks = async (req, res, next) => {
     try {
         const books = await booksService.getAllBooks();
-
         res.status(200).json({
             books,
             booksCount: books.length,
@@ -25,4 +24,16 @@ const getBookById = async (req, res, next) => {
     }
 };
 
-export default { getBooks, getBookById };
+const addBook = async (req, res, next) => {
+    try {
+        const id = await booksService.addBook(req.body);
+        if (!id) {
+            throw new Error(`Failed to add a book ${req.body}`);
+        }
+        res.status(200).json({ id });
+    } catch (e) {
+        next(e);
+    }
+};
+
+export default { getBooks, getBookById, addBook };

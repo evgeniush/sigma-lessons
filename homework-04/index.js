@@ -29,7 +29,9 @@ try {
     async function read(contents) {
         console.log('Writing, be patient...');
         let start = Date.now();
-        const readable = stream.Readable.from(readNextLine(sizeState, contents));
+        const readable = stream.Readable.from(
+            readNextLine(sizeState, contents)
+        );
         const writable = createWriteStream(result);
 
         const handleError = () => {
@@ -41,16 +43,19 @@ try {
         const handleEnd = () => {
             let end = Date.now();
             const spentMilliseconds = end - start;
-            const formattedSpentTime = dayjs.duration(spentMilliseconds).format('HH:mm:ss');
+            const formattedSpentTime = dayjs
+                .duration(spentMilliseconds)
+                .format('HH:mm:ss');
             console.log('Done!');
-            console.log(`The file with requested size ${prettyBytes(sizeState.max)} in bytes has been generated: ${result}`);
+            console.log(
+                `The file with requested size ${prettyBytes(
+                    sizeState.max
+                )} in bytes has been generated: ${result}`
+            );
             console.log(`Spent time on writing: ${formattedSpentTime}`);
         };
 
-        readable
-            .on('end', handleEnd)
-            .on('error', handleError)
-            .pipe(writable);
+        readable.on('end', handleEnd).on('error', handleError).pipe(writable);
     }
 } catch (e) {
     console.error(e);
