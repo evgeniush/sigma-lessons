@@ -28,7 +28,7 @@ const addBook = async (req, res, next) => {
     try {
         const id = await booksService.addBook(req.body);
         if (!id) {
-            throw new Error(`Failed to add a book ${req.body}`);
+            throw new Error(`Failed to add a book ${JSON.stringify(req.body)}`);
         }
         res.status(200).json({ id });
     } catch (e) {
@@ -36,4 +36,22 @@ const addBook = async (req, res, next) => {
     }
 };
 
-export default { getBooks, getBookById, addBook };
+const notAllowed = async (req, res) => {
+    res.status(405).send('Sorry, not allowed');
+};
+
+const updateBook = async (req, res, next) => {
+    try {
+        const id = await booksService.updateBook(req.body);
+        if (!id) {
+            throw new Error(
+                `Failed to update a book ${JSON.stringify(req.body)}`
+            );
+        }
+        res.status(200).json({ id });
+    } catch (e) {
+        next(e);
+    }
+};
+
+export default { getBooks, getBookById, addBook, notAllowed, updateBook };

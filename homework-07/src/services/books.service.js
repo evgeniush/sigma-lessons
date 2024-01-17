@@ -29,4 +29,19 @@ const addBook = async (book) => {
     return book.id;
 };
 
-export default { getAllBooks, getBookById, addBook };
+const updateBook = async (book) => {
+    const data = await readFile('./books.json', { encoding: 'utf-8' });
+    const { books } = JSON.parse(data);
+    await writeFile(
+        './books.json',
+        JSON.stringify({
+            books: [...books.filter(({ id }) => id !== book.id), book],
+        }),
+        {
+            encoding: 'utf-8',
+        }
+    );
+    return book.id;
+};
+
+export default { getAllBooks, getBookById, addBook, updateBook };
