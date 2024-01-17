@@ -26,11 +26,15 @@ const getBookById = async (req, res, next) => {
 
 const addBook = async (req, res, next) => {
     try {
-        const id = await booksService.addBook(req.body);
-        if (!id) {
+        const { book, location } = await booksService.addBook(req.body);
+        if (!book) {
             throw new Error(`Failed to add a book ${JSON.stringify(req.body)}`);
         }
-        res.status(200).json({ id });
+        res.status(200)
+            .set({
+                Location: location,
+            })
+            .json(book);
     } catch (e) {
         next(e);
     }
