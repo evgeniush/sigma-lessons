@@ -15,8 +15,7 @@ const getBookById = async (bookId) => {
 };
 
 const addBook = async (book) => {
-    const data = await readFile('./books.json', { encoding: 'utf-8' });
-    const { books } = JSON.parse(data);
+    const books = await getAllBooks();
     await writeFile(
         './books.json',
         JSON.stringify({
@@ -30,8 +29,7 @@ const addBook = async (book) => {
 };
 
 const updateBook = async (book) => {
-    const data = await readFile('./books.json', { encoding: 'utf-8' });
-    const { books } = JSON.parse(data);
+    const books = await getAllBooks();
     await writeFile(
         './books.json',
         JSON.stringify({
@@ -44,4 +42,24 @@ const updateBook = async (book) => {
     return book.id;
 };
 
-export default { getAllBooks, getBookById, addBook, updateBook };
+const deleteBookById = async (bookId) => {
+    const books = await getAllBooks();
+    await writeFile(
+        './books.json',
+        JSON.stringify({
+            books: [...books.filter(({ id }) => id !== bookId)],
+        }),
+        {
+            encoding: 'utf-8',
+        }
+    );
+    return bookId;
+};
+
+export default {
+    getAllBooks,
+    getBookById,
+    addBook,
+    updateBook,
+    deleteBookById,
+};

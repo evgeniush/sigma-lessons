@@ -54,4 +54,20 @@ const updateBook = async (req, res, next) => {
     }
 };
 
-export default { getBooks, getBookById, addBook, notAllowed, updateBook };
+const deleteBookById = async (req, res, next) => {
+    try {
+        await booksService.deleteBookById(req.params.id);
+        res.status(200).json(req.params.id);
+    } catch (e) {
+        next(e);
+    }
+};
+
+export default {
+    getBooks,
+    getBookById,
+    addBook,
+    notAllowed,
+    updateBook,
+    deleteBookById,
+};
