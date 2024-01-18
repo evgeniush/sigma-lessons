@@ -17,6 +17,7 @@ const getBookById = async (req, res, next) => {
         const book = await booksService.getBookById(req.params.id);
         if (!book) {
             res.sendStatus(404);
+            return;
         }
         res.status(200).json(book);
     } catch (e) {
@@ -26,9 +27,12 @@ const getBookById = async (req, res, next) => {
 
 const addBook = async (req, res, next) => {
     try {
-        const { book, location } = await booksService.addBook(req.body);
+        const { book, location } = (await booksService.addBook(req.body)) ?? {};
         if (!book) {
-            throw new Error(`Failed to add a book ${JSON.stringify(req.body)}`);
+            res.status(400).send(
+                `Failed to add a book ${JSON.stringify(req.body)}`
+            );
+            return;
         }
         res.status(200)
             .set({
@@ -46,13 +50,16 @@ const notAllowed = async (req, res) => {
 
 const updateBook = async (req, res, next) => {
     try {
-        const id = await booksService.updateBook(req.body);
-        if (!id) {
-            throw new Error(
-                `Failed to update a book ${JSON.stringify(req.body)}`
+        const book = await booksService.updateBook(req.body);
+        if (!book) {
+            res.status(400).send(
+                `Failed to update requested book ${JSON.stringify(
+                    req.body
+                )}. No book found.`
             );
+            return;
         }
-        res.status(200).json({ id });
+        res.status(200).json({ ...book });
     } catch (e) {
         next(e);
     }
@@ -60,8 +67,16 @@ const updateBook = async (req, res, next) => {
 
 const deleteBookById = async (req, res, next) => {
     try {
-        await booksService.deleteBookById(req.params.id);
-        res.status(200).json(req.params.id);
+        const result = await booksService.deleteBookById(req.params.id);
+        if (!result) {
+            res.status(400).send(
+                `Failed to delete requested book ${JSON.stringify(
+                    req.body
+                )}. No book found.`
+            );
+            return;
+        }
+        res.status(200).send(`Book with id ${req.params.id} has been deleted.`);
     } catch (e) {
         next(e);
     }

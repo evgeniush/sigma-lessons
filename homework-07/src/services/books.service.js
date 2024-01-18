@@ -17,9 +17,7 @@ const getBookById = async (bookId) => {
 
 const addBook = async ({ title, author } = {}) => {
     if ([title, author].some((v) => !Boolean(v))) {
-        throw new Error(
-            `Please provide required info to be able to add a book`
-        );
+        return null;
     }
     const books = await getAllBooks();
     const id = randomUUID();
@@ -45,6 +43,10 @@ const addBook = async ({ title, author } = {}) => {
 
 const updateBook = async (book) => {
     const books = await getAllBooks();
+    const [bookToUpdate] = [...books.filter(({ id }) => id === book.id)];
+    if (!bookToUpdate) {
+        return null;
+    }
     await writeFile(
         './books.json',
         JSON.stringify({
@@ -54,11 +56,15 @@ const updateBook = async (book) => {
             encoding: 'utf-8',
         }
     );
-    return book.id;
+    return book;
 };
 
 const deleteBookById = async (bookId) => {
     const books = await getAllBooks();
+    const [bookToDelete] = [...books.filter(({ id }) => id === bookId)];
+    if (!bookToDelete) {
+        return false;
+    }
     await writeFile(
         './books.json',
         JSON.stringify({
@@ -68,7 +74,7 @@ const deleteBookById = async (bookId) => {
             encoding: 'utf-8',
         }
     );
-    return bookId;
+    return true;
 };
 
 export default {
