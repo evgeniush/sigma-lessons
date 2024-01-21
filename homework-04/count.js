@@ -9,7 +9,7 @@ dayjs.extend(duration);
 const count = async () => {
     await validateFilePath(result, 'Result');
     const rs = createReadStream(result, 'utf8');
-    let words = [];
+    let wordsCount = 0;
     console.log('Counting, be patient...');
     let start = Date.now();
     let paragraph = '';
@@ -18,7 +18,7 @@ const count = async () => {
         const lines = paragraph.split('\n');
         const items = lines.flatMap((line) => line.split(' '));
         const last = paragraph.endsWith('\n') ? '' : items.pop();
-        words = [...words, ...items];
+        wordsCount = wordsCount + items.length;
         paragraph = last;
     }
     let end = Date.now();
@@ -26,7 +26,7 @@ const count = async () => {
     const formattedSpentTime = dayjs
         .duration(spentMilliseconds)
         .format('HH:mm:ss');
-    console.log('Words count in the result file is: ', words.length);
+    console.log('Words count in the result file is: ', wordsCount);
     console.log(`Spent time on counting: ${formattedSpentTime}`);
 };
 
