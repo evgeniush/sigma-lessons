@@ -5,11 +5,9 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-  "bin": {
-    "calc": "index.js"
-  },
   "scripts": {
-    "start": "node index.js",
+    "count": "node count.js",
+    "generate": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
